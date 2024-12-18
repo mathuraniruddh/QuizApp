@@ -2,6 +2,7 @@ const express = require('express');
 
 const quizzes = new Map();
 const userAnswers = new Map();
+const userResults = new Map();
 
 exports.createQuiz = async function(req,res) {
     try{
@@ -36,7 +37,8 @@ exports.getAllQuizes= async function(req, res) {
 exports.getQuizByQuizId = async function(req, res){
     try{
         const { quizId } = req.params;
-        const quiz = quizzes.get(quizId);
+        console.log(typeof quizId)
+        const quiz = quizzes.get(Number(quizId));
     
         if (!quiz) {
             return res.status(404).json({ message: 'Quiz not found' });
@@ -60,7 +62,7 @@ exports.getQuizByQuizId = async function(req, res){
 exports.addQuestions = async function(req,res) {
     try{
     const {quizId,questionId,questionText, choices, correctAnswer } = req.body;
-
+      console.log("in add question",typeof quizId)
     const quiz = quizzes.get(quizId);
     if (!quiz) {
         return res.status(404).json({ message: 'Quiz not found' });
@@ -124,9 +126,10 @@ exports.submitAnswer = async function (req,res) {
 exports.userScore = async function (req,res) {
     try{
 const { userId, quizId } = req.params;
-var Answer = `${userId}_${quizId}`
+
+var Answer = `${Number(userId)}_${Number(quizId)}`
     const answers = userAnswers.get(Answer);
-    const quiz = quizzes.get(quizId);
+    const quiz = quizzes.get(Number(quizId));
 
     if (!quiz) {
         return res.status(404).json({ message: 'Quiz not found' });
@@ -135,17 +138,19 @@ var Answer = `${userId}_${quizId}`
     if (!answers) {
         return res.status(404).json({ message: 'No answers found for this user' });
     }
-
+    if (!userResults.has(Answer)) {
+        userResults.set(Answer, []);
+    }
     let score = 0;
     const totalQuestions = quiz.questions.length;
-
+   
     // Calculate score
     answers.forEach(answer => {
         if (answer.isCorrect) {
             score++;
         }
     });
-
+ 
     const summary = answers.map(answer => {
         const question = quiz.questions[answer.questionIndex];
         return {
@@ -155,16 +160,22 @@ var Answer = `${userId}_${quizId}`
             isCorrect: answer.isCorrect
         };
     });
-
+     var userResult = {  "user_id":userId,
+        "quiz_id":quizId,
+        "Score":score,
+        "Answer":summary
+    }
+    userResults.get(Answer).push(userResult)
     res.status(200).json({
-        score,
-        totalQuestions,
-        summary
+        "user_id":userId,
+        "quiz_id":quizId,
+        "Score":score,
+        "Answer":summary
     });
 }
 catch(error){
-    console.error('Error in scoring a question:', error);
-    res.status(500).json({ message: 'Error in scoring a question', error });
+    console.error('Error in result saving:', error);
+    res.status(500).json({ message: 'Error in result saving', error });
 }
 
 }

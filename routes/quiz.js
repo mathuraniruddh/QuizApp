@@ -6,5 +6,5 @@ router.get('/getQuizzes',quizController.getAllQuizes)
 router.get('/getQuiz/:quizId',quizController.getQuizByQuizId)
 router.post('/addQuestions',quizController.addQuestions)
 router.post('/saveAnswer',quizController.submitAnswer)
-router.get('/answers/:userId/:quizId',quizController.userScore)
+router.get('/userScore/:userId/:quizId',quizController.userScore)
  module.exports =router 
