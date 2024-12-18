@@ -4,4 +4,7 @@ var router = express.Router();
 router.post('/createQuiz',quizController.createQuiz)
 router.get('/getQuizzes',quizController.getAllQuizes)
 router.get('/getQuiz/:quizId',quizController.getQuizByQuizId)
+router.post('/addQuestions',quizController.addQuestions)
+router.post('/saveAnswer',quizController.submitAnswer)
+router.get('/answers/:userId/:quizId',quizController.userScore)
  module.exports =router 

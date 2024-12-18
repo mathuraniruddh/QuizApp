@@ -84,14 +84,14 @@ catch(error){
 
 exports.submitAnswer = async function (req,res) {
     try{
-        const { userId, quizId, questionId, answer } = req.body;
+        const { userId, quizId, questionId,questionIndex, answer } = req.body;
     
         const quiz = quizzes.get(quizId);
         if (!quiz) {
             return res.status(404).json({ message: 'Quiz not found' });
         }
     
-        const question = quiz.questions[questionId];
+        const question = quiz.questions[questionIndex];
         if (!question) {
             return res.status(404).json({ message: 'Question not found' });
         }
@@ -107,6 +107,7 @@ exports.submitAnswer = async function (req,res) {
     
         const userAnswer = {
             questionId,
+            questionIndex,
             answer,
             isCorrect 
           };
@@ -146,7 +147,7 @@ var Answer = `${userId}_${quizId}`
     });
 
     const summary = answers.map(answer => {
-        const question = quiz.questions[answer.questionId];
+        const question = quiz.questions[answer.questionIndex];
         return {
             questionText: question.questionText,
             userAnswer: answer.answer,
