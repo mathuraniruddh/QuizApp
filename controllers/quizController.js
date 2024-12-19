@@ -59,6 +59,7 @@ exports.getQuizByQuizId = async function(req, res){
 
 }
 
+// Add question to a quiz
 exports.addQuestions = async function(req,res) {
     try{
     const {quizId,questionId,questionText, choices, correctAnswer } = req.body;
@@ -84,6 +85,7 @@ catch(error){
 }
 }
 
+// save answer to a particular question of a quiz
 exports.submitAnswer = async function (req,res) {
     try{
         const { userId, quizId, questionId,questionIndex, answer } = req.body;
@@ -123,6 +125,7 @@ exports.submitAnswer = async function (req,res) {
     }
 }
 
+//calculate user score for a quiz and show the quiz result
 exports.userScore = async function (req,res) {
     try{
 const { userId, quizId } = req.params;
